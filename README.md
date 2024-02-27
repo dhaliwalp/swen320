@@ -33,6 +33,15 @@ To view the page,
     - http://localhost:9090/post_form
     - Response page after post form submission (route is /post_submit)
 
+HTTP Request and Response Flow
+```mermaid
+sequenceDiagram
+    Client->>+Server: http://localhost:9090/post_form
+    Server->>-Client: post_form.html
+    Client->>+Server: http://localhost:9090/post_submit
+    Server->>-Client: response.html
+```
+
 
 
 
