@@ -29,6 +29,8 @@ To view the page,
     - http://localhost:9090/home
 - Home page with control variable cval (cval=1 or 0) sent over HTTP GET method:
     - http://localhost:9090/home?cval=1
+    - http://localhost:9090/home?cval=0
+    - http://localhost:9090/home (the same as cval=0 because default value = 0)
 - Post form page and its response:
     - http://localhost:9090/post_form
     - Response page after post form submission (route is /post_submit)
