@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HTTP Post Submission Response</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <script type="text/javascript" src="/js/main.js"></script> 
+    <script>
+        console.log("there is a js from script tag")
+    </script>
+    <style type="text/css">
+      html,
+    </style>
+</head>
+<body>
+	<h1>HTTP Post Submission Response</h1>
+    <div>
+        <div>
+            This is the number you submitted: {{number}}
+        </div>
+        <div style="font: 1em sans-serif;">
+            This is the field_a you submitted: {{field_a}}
+        </div>
+        <div>
+            This is the field_b you save in session : {{session['field_b']}}
+        </div>
+        
+    </div>
+
+</body>
+</html>

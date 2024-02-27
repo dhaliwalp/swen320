@@ -1,0 +1,1 @@
+python /src/app/server.py run -h 0.0.0.0
