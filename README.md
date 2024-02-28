@@ -44,7 +44,8 @@ sequenceDiagram
     Server->>-Client: response.html
 ```
 
-
+Reference of Using "Session" Variables
+- https://testdriven.io/blog/flask-sessions/ 
 
 
 
