@@ -43,6 +43,25 @@ def form_response_ex():
             session['field_b'] = field_b_val
         return render_template('response.html', field_a=field_a_val, number=number)
 
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        if 'username' in request.form:
+            username = request.form['username']
+            if(len(username) > 10 or len(username) < 5):
+                return render_template('register.html', error="Username length needs to be between 5 and 10 characters")
+        if 'password' in request.form:
+            password = request.form['password']
+            if(len(password) > 20 or len(password) < 8):
+                return render_template('register.html', error="Password length needs to be between 8 and 20 characters")
+        if 'passkey' in request.form:
+            passkey = request.form['passkey']
+            if(len(passkey) > 30 or len(passkey) < 10):
+                return render_template('register.html', error="Passkey length needs to be between 10 and 30 characters")
+        return render_template('response.html', username=username, password=password)
+    return render_template('register.html')
+
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get("FLASK_SERVER_PORT", 9090), debug=True)
