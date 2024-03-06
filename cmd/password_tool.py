@@ -23,3 +23,5 @@ if __name__ == "__main__":
         plainPassword = sys.argv[2]
         encText = cipher.encrypt(plainPassword)
         print(encText)
+
+        

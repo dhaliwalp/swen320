@@ -87,5 +87,3 @@ class Cipher():
 # print ("Cipher Text: " + encText)
 # print ("Decrypt Text: " + cipher.decrypt(encText))
 #
-
-
