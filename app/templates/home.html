@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Flask Home Page</title>
-    <link rel="stylesheet" href="/css/main.css">
-    <style type="text/css"></style>
-</head>
-<body>
-	<h1>Hello {{username}}</h1>
-    <div>
-        This is the data from the variable my_var1 from {{my_var1}}
-    </div>
-    {% if is_show %}
-    <div class="show">
-        Show data
-    </div>
-    {% else %}
-    <div class="not_show">
-        Not show data
-    </div>   
-    {% endif %}
+<form>
+    <label for="username">username:</label>
+    <input type="text" id="username" name="username" maxlength="10" minlength="5" required><br><br>
 
-</body>
-</html>
+    
+    <label for="password">password:</label>
+    <input type="password" id="password" name="password" maxlength="20" minlength="8" required><br><br>
+    
+    <input type="submit" value="Submit">
+    <input type="submit" value="Register">
+</form>
