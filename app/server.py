@@ -1,16 +1,17 @@
-#!/usr/bin/env python
 import os
 from os.path import join, dirname
-from flask import Flask, render_template, session, request
-
+from flask import Flask, render_template, session, request, redirect, url_for
+# from Cipher.py import Cipher
 
 app = Flask(__name__, template_folder='/src/app/templates', static_folder='/src/app/static', static_url_path='')
 
 app.config["SECRET_KEY"] ='192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d54727823bcbf'
 
+# cipher = Cipher()
+
 @app.route('/')
 def index():
-    return "Flask - Hello World!!"
+    return redirect(url_for('login'))
 
 @app.route('/home', methods=['POST', 'GET'])
 def home():
@@ -48,21 +49,49 @@ def register():
     if request.method == 'POST':
         if 'username' in request.form:
             username = request.form['username']
-            if(len(username) > 10 or len(username) < 5):
+            if len(username) > 10 or len(username) < 5:
                 return render_template('register.html', error="Username length needs to be between 5 and 10 characters")
         if 'password' in request.form:
             password = request.form['password']
-            if(len(password) > 20 or len(password) < 8):
+            if len(password) > 20 or len(password) < 8:
                 return render_template('register.html', error="Password length needs to be between 8 and 20 characters")
         if 'passkey' in request.form:
             passkey = request.form['passkey']
-            if(len(passkey) > 30 or len(passkey) < 10):
+            if len(passkey) > 30 or len(passkey) < 10:
                 return render_template('register.html', error="Passkey length needs to be between 10 and 30 characters")
-        return render_template('response.html', username=username, password=password)
+        return redirect(url_for('login'))
     return render_template('register.html')
 
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        if 'username' in request.form:
+            username = request.form['username']
+            if len(username) > 10 or len(username) < 5:
+                return render_template('login.html', error="Username length needs to be between 5 and 10 characters")
+        if 'password' in request.form:
+            password = request.form['password']
+            if len(password) > 20 or len(password) < 8:
+                return render_template('login.html', error="Password length needs to be between 8 and 20 characters")
+        return redirect(url_for('home'))
+    return render_template('login.html')
+
+# def encryption():
+#     if request.method == 'POST':
+#         plaintext = request.form['plaintext']  # Get plaintext from form
+#         encrypted_text = cipher.encrypt(plaintext)  # Encrypt plaintext
+#         return render_template('encryption.html', encrypted_text=encrypted_text)
+#     return render_template('encryption.html')
+
+# # New route for decryption
+# @app.route('/decryption', methods=['POST', 'GET'])
+# def decryption():
+#     if request.method == 'POST':
+#         encrypted_text = request.form['encrypted_text']  # Get encrypted text from form
+#         decrypted_text = cipher.decrypt(encrypted_text)  # Decrypt encrypted text
+#         return render_template('decryption.html', decrypted_text=decrypted_text)
+#     return render_template('decryption.html')
 
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get("FLASK_SERVER_PORT", 9090), debug=True)
-

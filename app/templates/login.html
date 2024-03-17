@@ -1,13 +1,13 @@
-<form>
+<form action="/login" method="POST">
     <label for="username">username:</label>
     <input type="text" id="username" name="username" maxlength="10" minlength="5" required><br><br>
 
-    
     <label for="password">password:</label>
     <input type="password" id="password" name="password" maxlength="20" minlength="8" required><br><br>
     
-    <label for="passkey">passkey:</label>
-    <input type="text" id="passkey" name="passkey" maxlength="30" minlength="10" required><br><br>
-    
+    <input type="submit" name="action" value="Login">
+</form>
+
+<form action="/register" method="GET">
     <input type="submit" value="Register">
 </form>

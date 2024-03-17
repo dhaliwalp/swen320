@@ -1,11 +1,136 @@
-<form>
-    <label for="username">username:</label>
-    <input type="text" id="username" name="username" maxlength="10" minlength="5" required><br><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Manager</title>
+    <style>
+        body {
+            background-color: #f0f0f0; 
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #333; 
+        }
 
+        h1 {
+            background-color: #959595; 
+            padding: 0px;
+            margin: 0px;
+            text-align: left; 
+            font-size: 20px; 
+            margin-left: 0px;
+            color: white; 
+        }
+
+        .tabs {
+            list-style-type: none;
+            padding: 0px;
+            display: flex;
+            justify-content: space-around; 
+            background-color: rgb(73, 132, 243); 
+            margin-top: 20px;
+            border-radius: 10px; 
+            overflow: hidden;
+        }
+
+        .tabs li {
+            display: inline;
+            margin: 0;
+        }
+
+        .tabs li a {
+            text-decoration: none;
+            color: #ffffff;
+            padding: 10px 20px; 
+            display: inline-block;
+            border: 1px solid #333; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+
+        .tabs li a.active {
+            background-color: white;
+            color: black; 
+        }
+
+        .tabs li a:hover {
+            background-color: #ddd;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: #f0f0f0; 
+            border-radius: 10px;
+            margin-top: 10px; 
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Password Manager</h1>
+    <ul class="tabs">
+        <li><a href="#username" class="active" onclick="toggleTab(this)">Username</a></li>
+        <li><a href="#encryption" onclick="toggleTab(this)">Encryption</a></li>
+        <li><a href="#decryption" onclick="toggleTab(this)">Decryption</a></li>
+        <li><a href="#list" onclick="toggleTab(this)">List</a></li>
+        <li><a href="#logout" onclick="toggleTab(this)">Logout</a></li>
+    </ul>
+    <div id="username" class="tab-content active">
+        Still need to implement 
+    </div>
+    <div id="encryption" class="tab-content">
+       
+    </div>
+    <div id="decryption" class="tab-content">
+        
+    </div>
+    <div id="list" class="tab-content">
+       
+    </div>
+    <div id="logout" class="tab-content">
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        function toggleTab(tab) {
+            var tabs = document.querySelectorAll('.tabs li a');
+            tabs.forEach(function(item) {
+                item.classList.remove('active');
+            });
+            tab.classList.add('active');
+            if (tab.getAttribute('href') === "#logout") {
+                logout();
+            }
+        }
     
-    <label for="password">password:</label>
-    <input type="password" id="password" name="password" maxlength="20" minlength="8" required><br><br>
-    
-    <input type="submit" value="Login">
-    <input type="submit" value="Register">
-</form>
+        function logout() {
+            window.location.href = "/login";
+        }
+    </script>
