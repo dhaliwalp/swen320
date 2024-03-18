@@ -49,3 +49,12 @@ Reference of Using "Session" Variables
 
 
 
+For tests
+
+```
+pip install pytest
+``` 
+
+```
+pytest
+``` 
