@@ -76,22 +76,5 @@ def login():
         return redirect(url_for('home'))
     return render_template('login.html')
 
-# def encryption():
-#     if request.method == 'POST':
-#         plaintext = request.form['plaintext']  # Get plaintext from form
-#         encrypted_text = cipher.encrypt(plaintext)  # Encrypt plaintext
-#         return render_template('encryption.html', encrypted_text=encrypted_text)
-#     return render_template('encryption.html')
-
-# # New route for decryption
-# @app.route('/decryption', methods=['POST', 'GET'])
-# def decryption():
-#     if request.method == 'POST':
-#         encrypted_text = request.form['encrypted_text']  # Get encrypted text from form
-#         decrypted_text = cipher.decrypt(encrypted_text)  # Decrypt encrypted text
-#         return render_template('decryption.html', decrypted_text=decrypted_text)
-#     return render_template('decryption.html')
-
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get("FLASK_SERVER_PORT", 9090), debug=True)
