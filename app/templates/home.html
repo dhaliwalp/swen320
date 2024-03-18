@@ -3,96 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="script.js" defer></script>
+    <link href="styles.css" rel="stylesheet"> -->
     <title>Password Manager</title>
-    <style>
-        body {
-            background-color: #f0f0f0; 
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            color: #333; 
-        }
+    <style>    
+    body {
+        background-color: #f0f0f0; 
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        color: #333; 
+    }
+    
+    h1 {
+        background-color: #959595; 
+        padding: 0px;
+        margin: 0px;
+        text-align: left; 
+        font-size: 20px; 
+        margin-left: 0px;
+        color: white; 
+    }
+    
+    .tabs {
+        list-style-type: none;
+        padding: 0px;
+        display: flex;
+        justify-content: space-evenly; 
+        margin-top: 0px;
+        border-radius: 10px; 
+        overflow: hidden;
+    }
+    
+    .tabs li {
+        display: inline;
+        margin: 0;
+        background-color: rgb(73, 132, 243);
+        border-radius: 5px;
+        min-width: 50px;
+    }
+    
+    .tabs li a {
+        text-decoration: none;
+        color: #ffffff;
+        padding: 10px 20px; 
+        display: inline-block;
+        border: 1px solid #333; 
+        border-radius: 5px; 
+        cursor: pointer; 
+    }
+    
+    .tabs li a.active {
+        background-color: white;
+        color: black; 
+    }
+    
+    .tabs li a:hover {
+        background-color: #ddd;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 20px;
+        background-color: #f0f0f0; 
+        border-radius: 10px;
+        margin-top: 10px; 
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    input[type="text"], input[type="password"] {
+        width: 300px;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    
+    button {
+        padding: 10px 20px;
+        background-color: #333;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    button:hover {
+        background-color: #444;
+    }
 
-        h1 {
-            background-color: #959595; 
-            padding: 0px;
-            margin: 0px;
-            text-align: left; 
-            font-size: 20px; 
-            margin-left: 0px;
-            color: white; 
-        }
+    .active {
+        display: flex;
 
-        .tabs {
-            list-style-type: none;
-            padding: 0px;
-            display: flex;
-            justify-content: space-around; 
-            background-color: rgb(73, 132, 243); 
-            margin-top: 20px;
-            border-radius: 10px; 
-            overflow: hidden;
-        }
+    }
 
-        .tabs li {
-            display: inline;
-            margin: 0;
-        }
+    .text-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-        .tabs li a {
-            text-decoration: none;
-            color: #ffffff;
-            padding: 10px 20px; 
-            display: inline-block;
-            border: 1px solid #333; 
-            border-radius: 5px; 
-            cursor: pointer; 
-        }
+    .submit-box {
+        width: 100px;
+        background-color: rgb(73, 132, 243);
+        color: white;
+        border: none;
+        height: 20px;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
 
-        .tabs li a.active {
-            background-color: white;
-            color: black; 
-        }
+    form label {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
 
-        .tabs li a:hover {
-            background-color: #ddd;
-        }
+    #username {
+        display: none;
+    }
 
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background-color: #f0f0f0; 
-            border-radius: 10px;
-            margin-top: 10px; 
-        }
+    #username.open {
+        display: flex;
+    }
 
-        .tab-content.active {
-            display: block;
-        }
+    #encryption {
+        display: none;
+    }
 
-        input[type="text"], input[type="password"] {
-            width: 300px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
+    #encryption.open {
+        display: flex;
+    }
 
-        button {
-            padding: 10px 20px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    #decryption {
+        display: none;
+    }
 
-        button:hover {
-            background-color: #444;
-        }
+    #decryption.open {
+        display: flex;
+    }   
+    
+    #list {
+        display: none;
+    }
+
+    #list.open {
+        display: flex;
+    }
+
     </style>
 </head>
+
+
 <body>
     <h1>Password Manager</h1>
     <ul class="tabs">
@@ -102,21 +167,97 @@
         <li><a href="#list" onclick="toggleTab(this)">List</a></li>
         <li><a href="#logout" onclick="toggleTab(this)">Logout</a></li>
     </ul>
-    <div id="username" class="tab-content active">
-        Still need to implement 
+
+    <div id="username" >
+        <form action="/home#username" method="GET" class="text-form">
+            <label for="New Password:">New Password</label>
+            <input type="text">
+            <input type="submit" value="Change" class="submit-box">
+        </form>
     </div>
-    <div id="encryption" class="tab-content">
-       
+    <div id="encryption">
+        <form action="/home#encryption" method="GET" class="text-form">
+            <label for="Password Text:">Password Text</label>
+            <input type="text">
+            <input type="submit" value="Encrypt" class="submit-box">
+            <label for="Encrypted Text:">Encrypted Text</label>
+            <input type="text">
+            <input type="text">
+            <input type="submit" value="Save" class="submit-box">
+        </form>
     </div>
-    <div id="decryption" class="tab-content">
-        
+    <div id="decryption">
+        <form action="/home#decryption" method="GET" class="text-form">
+            <label for="Encrypted Text:">Encrypted Text</label>
+            <input type="text">
+            <input type="submit" value="Decrypt" class="submit-box">
+            <label for="Decrypted Text:">Decrypted Text</label>
+            <input type="text">
+        </form>
     </div>
-    <div id="list" class="tab-content">
-       
+    <div id="list">
+        <form action="/home#list" method="GET" class="text-form">
+            <label for="Encrypted Passwords:">Encrypted Passwords:</label>
+        </form>
     </div>
-    <div id="logout" class="tab-content">
-        <button onclick="logout()">Logout</button>
+    <div id="logout">
+        <form action="/home#logout" method="GET" class="text-form">
+            <!-- <input type="submit" value="Logout" class="submit-box"> -->
+        </form>
     </div>
+
+    <script>
+        window.addEventListener("hashchange", routeChange);
+    
+        function routeChange() {
+            const hashId = window.location.hash;
+            console.log(hashId);
+    
+            const user = document.getElementById("username");
+            const encrypt = document.getElementById("encryption");
+            const decrypt = document.getElementById("decryption");
+            const list = document.getElementById("list");
+            const logout = document.getElementById("logout");
+    
+            if (hashId === "#username") {
+                user.classList.add("open");
+                encrypt.classList.remove("open");
+                decrypt.classList.remove("open");
+                list.classList.remove("open"); 
+                logout.classList.remove("open");
+            } 
+            else if (hashId === "#encryption") {
+                encrypt.classList.add("open");
+                user.classList.remove("open");
+                decrypt.classList.remove("open");
+                list.classList.remove("open"); 
+                logout.classList.remove("open");
+            }
+            else if (hashId === "#decryption") {
+                decrypt.classList.add("open");
+                user.classList.remove("open");
+                encrypt.classList.remove("open");
+                list.classList.remove("open");
+                logout.classList.remove("open");
+            }
+            else if (hashId === "#list") {
+                list.classList.add("open");
+                user.classList.remove("open");
+                encrypt.classList.remove("open");
+                decrypt.classList.remove("open");
+                logout.classList.remove("open");
+            }
+            else if (hashId === "#logout") {
+                logout.classList.add("open");
+                user.classList.remove("open");
+                encrypt.classList.remove("open");
+                decrypt.classList.remove("open");
+                list.classList.remove("open");
+            }
+        }
+
+        window.addEventListener("load", routeChange);
+    </script>
 
     <script>
         function toggleTab(tab) {
