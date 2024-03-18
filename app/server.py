@@ -1,6 +1,7 @@
 import os
 from os.path import join, dirname
 from flask import Flask, render_template, session, request, redirect, url_for
+
 # from Cipher.py import Cipher
 
 app = Flask(__name__, template_folder='/src/app/templates', static_folder='/src/app/static', static_url_path='')
