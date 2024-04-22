@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List</title>
     <link rel="stylesheet" href="/css/main.css">
-
 </head>
 <body>
     <h1>Password Manager</h1>
@@ -16,16 +15,18 @@
         <li><a href="list">List</a></li>
         <li><a href="login">Logout</a></li>
     </ul>
-
     <div action="list">
-        <form action="/list" method="GET" class="text-form">
-            <label for="encrypted_passwords">Encrypted Passwords:</label>
-            <div class="data">
-                <p class="title">{{ encrypted_data.tag }}</p>
-            <p>{{ encrypted_data.encrypted_text }}</p>
-            </div>
-        </form>
+        {% if encrypted_data %}
+            {% for data in encrypted_data %}
+                <div class="data">
+                    <p class="title">{{ data.tag }}</p>
+                    <p>{{ data.encrypted_text }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>{{ message }}</p>
+        {% endif %}
+        
     </div>
-
 </body>
 </html>

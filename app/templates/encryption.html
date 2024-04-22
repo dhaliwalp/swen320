@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encryption</title>
     <link rel="stylesheet" href="/css/main.css">
-
 </head>
 <body>
     <h1>Password Manager</h1>
@@ -16,21 +15,17 @@
         <li><a href="list">List</a></li>
         <li><a href="login">Logout</a></li>
     </ul>
-
     <div>
-    <form action="/encryption" method="POST" class="text-form">
-        <label for="password_text">Password Text:</label>
-        <input type="text" id="password_text" name="password_text" required>
-        <input type="submit" value="Encrypt" class="submit-box">
-        <label for="encrypted_text">Encrypted Text:</label>
-        <input type="text" value="{{ encrypted_text }}" id="encrypted_text" name="encrypted_text" readonly>    </form>
-    </div>
-    <div>
-        <form action="/list_array" method="POST" class="save-form">
-            <input type="text" value="" id="encrypted_text" name="tag" class="input-two">  
-            <input type="submit" value="Save" id="" name="encrypted_text" class="submit-box">
+        <form action="/encryption" method="POST" class="text-form">
+            <label for="password_text">Password Text:</label>
+            <input type="text" id="password_text" name="password_text">
+            <input type="submit" value="Encrypt" name="encrypt" class="submit-box">
+            <input type="hidden" name="encrypted_text" value="{{ encrypted_text }}">
+            <label for="encrypted_text">Encrypted Text:</label>
+            <input type="text" value="{{ encrypted_text }}" id="encrypted_text" readonly>
+            <input type="text" value="" id="tag" name="tag" placeholder="Enter a tag" class="input-two">
+            <input type="submit" value="Save" name="save" class="submit-box">
         </form>
     </div>
-
 </body>
 </html>
