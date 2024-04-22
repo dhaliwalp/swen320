@@ -1,10 +1,10 @@
 import os
 from os.path import join, dirname
 from flask import Flask, render_template, session, request, redirect, url_for
-from Cipher import Cipher
-from fileStorage import register_user, check_credentials
-from fileStorage import update_password
-from fileStorage import clear_user
+from .Cipher import Cipher
+from .fileStorage import register_user, check_credentials
+from .fileStorage import update_password
+from .fileStorage import clear_user
 import json
 
 app = Flask(__name__, template_folder='/src/app/templates', static_folder='/src/app/static', static_url_path='')
