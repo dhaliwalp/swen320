@@ -14,6 +14,9 @@ app.config["SECRET_KEY"] ='192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d5
 
 cipher = Cipher()
 
+def testing(x):
+    return x + 1
+
 def login_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
