@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Manager</title>
+    <title>List</title>
     <link rel="stylesheet" href="/css/main.css">
+
 </head>
 <body>
     <h1>Password Manager</h1>
@@ -15,7 +16,16 @@
         <li><a href="list">List</a></li>
         <li><a href="login">Logout</a></li>
     </ul>
-    
-</body>
 
+    <div action="list">
+        <form action="/list" method="GET" class="text-form">
+            <label for="encrypted_passwords">Encrypted Passwords:</label>
+            <div class="data">
+                <p class="title">{{ encrypted_data.tag }}</p>
+            <p>{{ encrypted_data.encrypted_text }}</p>
+            </div>
+        </form>
+    </div>
+
+</body>
 </html>

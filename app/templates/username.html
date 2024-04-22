@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Manager</title>
+    <title>Username</title>
     <link rel="stylesheet" href="/css/main.css">
+    
 </head>
 <body>
     <h1>Password Manager</h1>
@@ -15,7 +16,14 @@
         <li><a href="list">List</a></li>
         <li><a href="login">Logout</a></li>
     </ul>
-    
-</body>
 
+    <div id="username" class="open">
+        <form action="/username" method="POST" class="text-form">
+            <label for="new_password">New Password:</label>
+            <input type="password" id="new_password" name="new_password" minlength="8" maxlength="20" required>
+            <input type="submit" name="action" value="Change" class="submit-box">
+        </form>
+    </div>
+ 
+</body>
 </html>
