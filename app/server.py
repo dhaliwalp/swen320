@@ -1,11 +1,12 @@
 import os
 from os.path import join, dirname
 from flask import Flask, render_template, session, request, redirect, url_for
-from .Cipher import Cipher
-from .fileStorage import register_user, check_credentials
-from .fileStorage import update_password
-from .fileStorage import clear_user
+from Cipher import Cipher
+from fileStorage import register_user, check_credentials
+from fileStorage import update_password
+from fileStorage import clear_user
 import json
+from functools import wraps
 
 app = Flask(__name__, template_folder='/src/app/templates', static_folder='/src/app/static', static_url_path='')
 
@@ -13,11 +14,20 @@ app.config["SECRET_KEY"] ='192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d5
 
 cipher = Cipher()
 
+def login_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'username' not in session:
+            return redirect(url_for('login'))
+        return func(*args, **kwargs)
+    return wrapper
+
 @app.route('/')
 def index():
     return redirect(url_for('login'))
 
 @app.route('/home', methods=['GET'], endpoint='home')
+@login_required
 def home():
     return render_template('home.html')
 
@@ -63,6 +73,7 @@ def login():
     return render_template('login.html')
 
 @app.route('/username', methods=['GET', 'POST'])
+@login_required
 def username():
     if request.method == 'POST':
         new_password = request.form['new_password']
@@ -73,15 +84,26 @@ def username():
     return render_template('username.html')
 
 @app.route('/encryption', methods=['GET', 'POST'])
+@login_required
 def encryption():
     if request.method == 'POST':
-        password_text = request.form['password_text']
-        encrypted_text = cipher.encrypt(password_text)
-        session['encrypted_text'] = encrypted_text
-        return render_template('encryption.html', encrypted_text=encrypted_text)
-    return render_template('encryption.html')
+        if 'encrypt' in request.form:
+            password_text = request.form['password_text']
+            encrypted_text = cipher.encrypt(password_text)
+            session['encrypted_text'] = encrypted_text
+        elif 'save' in request.form:
+            tag = request.form.get('tag', '')
+            encrypted_text = request.form.get('encrypted_text', '')
+            if tag and encrypted_text:
+                encrypted_data = {'tag': tag, 'encrypted_text': encrypted_text}
+                if 'encrypted_data_list' not in session:
+                    session['encrypted_data_list'] = []
+                session['encrypted_data_list'].append(encrypted_data)
+                session['encrypted_text'] = ''
+    return render_template('encryption.html', encrypted_text=session.get('encrypted_text', ''))
 
 @app.route('/decryption', methods=['GET', 'POST'], endpoint='decryption')
+@login_required
 def decryption():
     if request.method == 'POST':
         encrypted_text = request.form['encrypted_text']
@@ -96,15 +118,18 @@ def list_array():
         encrypted_text = session.get("encrypted_text")
         if encrypted_text:
             encrypted_data = {'tag': tag, 'encrypted_text': encrypted_text}
-            session['encrypted_data'] = json.dumps(encrypted_data)
+            if 'encrypted_data_list' in session:
+                session['encrypted_data_list'].append(encrypted_data)
+            else:
+                session['encrypted_data_list'] = [encrypted_data]
     return redirect(url_for('encryption'))
 
 @app.route('/list', methods=['GET'])
+@login_required
 def list():
-    encrypted_data_json = session.get('encrypted_data')
-    if encrypted_data_json:
-        encrypted_data = json.loads(encrypted_data_json)
-        return render_template('list.html', encrypted_data=encrypted_data)
+    encrypted_data_list = session.get('encrypted_data_list', [])
+    if encrypted_data_list:
+        return render_template('list.html', encrypted_data=encrypted_data_list)
     return render_template('list.html', message="No encrypted data available.")
     
 
@@ -119,11 +144,12 @@ def clear_user_route():
 
 
 @app.route('/logout', methods=['GET'], endpoint='logout')
+@login_required
 def home():
-    session.pop('username', None)  
-    session.pop('encrypted_data', None)
-    session.pop('tag', None)
-    session.pop('encrypted_text', None)  
+    session.pop('username', None)
+    session.pop('encrypted_text', None)
+    session.pop('encrypted_data_list', None)
+    session.clear()
     return render_template('login.html')
 
 
