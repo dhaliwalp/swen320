@@ -14,6 +14,8 @@ app.config["SECRET_KEY"] ='192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d5
 
 cipher = Cipher()
 
+user_data = {}
+
 def testing(x):
     return x + 1
 
@@ -70,6 +72,7 @@ def login():
         password = request.form['password']
         if check_credentials(username, password):
             session['username'] = username
+            user_data[username] = {'encrypted_text': '', 'encrypted_data_list': []}
             return redirect(url_for('home'))  
         else:
             return render_template('login.html', error="Invalid username or password")
@@ -89,21 +92,21 @@ def username():
 @app.route('/encryption', methods=['GET', 'POST'])
 @login_required
 def encryption():
+    username = session.get('username')
     if request.method == 'POST':
         if 'encrypt' in request.form:
             password_text = request.form['password_text']
             encrypted_text = cipher.encrypt(password_text)
-            session['encrypted_text'] = encrypted_text
+            user_data[username]['encrypted_text'] = encrypted_text
         elif 'save' in request.form:
             tag = request.form.get('tag', '')
-            encrypted_text = request.form.get('encrypted_text', '')
+            encrypted_text = user_data[username]['encrypted_text']
             if tag and encrypted_text:
                 encrypted_data = {'tag': tag, 'encrypted_text': encrypted_text}
-                if 'encrypted_data_list' not in session:
-                    session['encrypted_data_list'] = []
-                session['encrypted_data_list'].append(encrypted_data)
-                session['encrypted_text'] = ''
-    return render_template('encryption.html', encrypted_text=session.get('encrypted_text', ''))
+                user_data[username]['encrypted_data_list'].append(encrypted_data)
+                user_data[username]['encrypted_text'] = ''
+    encrypted_text = user_data[username]['encrypted_text']
+    return render_template('encryption.html', encrypted_text=encrypted_text)
 
 @app.route('/decryption', methods=['GET', 'POST'], endpoint='decryption')
 @login_required
@@ -130,7 +133,8 @@ def list_array():
 @app.route('/list', methods=['GET'])
 @login_required
 def list():
-    encrypted_data_list = session.get('encrypted_data_list', [])
+    username = session.get('username')
+    encrypted_data_list = user_data[username].get('encrypted_data_list', [])
     if encrypted_data_list:
         return render_template('list.html', encrypted_data=encrypted_data_list)
     return render_template('list.html', message="No encrypted data available.")
@@ -148,10 +152,11 @@ def clear_user_route():
 
 @app.route('/logout', methods=['GET'], endpoint='logout')
 @login_required
-def home():
+def logout():
+    username = session.get('username')
     session.pop('username', None)
-    session.pop('encrypted_text', None)
-    session.pop('encrypted_data_list', None)
+    if username in user_data:
+        del user_data[username]
     session.clear()
     return render_template('login.html')
 
