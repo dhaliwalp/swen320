@@ -2,7 +2,7 @@ import os
 from os.path import join, dirname
 from flask import Flask, render_template, session, request, redirect, url_for
 from Cipher import Cipher
-from fileStorage import register_user, check_credentials
+from fileStorage import User, register_user, check_credentials
 from fileStorage import update_password
 from fileStorage import clear_user
 import json
@@ -60,22 +60,26 @@ def register():
         username = request.form['username']
         password = request.form['password']
         passkey = request.form['passkey']
-        register_user(username, password, passkey)
-        return redirect(url_for('login'))
+        if register_user(username, password, passkey):
+            return redirect(url_for('login'))
+        else:
+            error_message = "Username already exists"
+            return render_template('register.html', error=error_message)
     return render_template('register.html')
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    session.pop('username', None)  
+    session.pop('username', None)
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if check_credentials(username, password):
+        is_valid, error_message = check_credentials(username, password)
+        if is_valid:
             session['username'] = username
             user_data[username] = {'encrypted_text': '', 'encrypted_data_list': []}
-            return redirect(url_for('home'))  
+            return redirect(url_for('home'))
         else:
-            return render_template('login.html', error="Invalid username or password")
+            return render_template('login.html', error=error_message)
     return render_template('login.html')
 
 @app.route('/username', methods=['GET', 'POST'])
@@ -89,14 +93,23 @@ def username():
         return render_template('username.html')
     return render_template('username.html')
 
+from flask import session
+
 @app.route('/encryption', methods=['GET', 'POST'])
 @login_required
 def encryption():
     username = session.get('username')
+
+    if username not in user_data:
+        user_data[username] = {'encrypted_text': '', 'encrypted_data_list': []}
+
+    base64_encoded_text = ""
+
     if request.method == 'POST':
         if 'encrypt' in request.form:
             password_text = request.form['password_text']
             encrypted_text = cipher.encrypt(password_text)
+            base64_encoded_text = cipher.base64Encode(encrypted_text)
             user_data[username]['encrypted_text'] = encrypted_text
         elif 'save' in request.form:
             tag = request.form.get('tag', '')
@@ -105,8 +118,9 @@ def encryption():
                 encrypted_data = {'tag': tag, 'encrypted_text': encrypted_text}
                 user_data[username]['encrypted_data_list'].append(encrypted_data)
                 user_data[username]['encrypted_text'] = ''
+
     encrypted_text = user_data[username]['encrypted_text']
-    return render_template('encryption.html', encrypted_text=encrypted_text)
+    return render_template('encryption.html', encrypted_text=encrypted_text, base64_encoded_text=base64_encoded_text)
 
 @app.route('/decryption', methods=['GET', 'POST'], endpoint='decryption')
 @login_required
@@ -117,23 +131,14 @@ def decryption():
         return render_template('decryption.html', decrypted_text=decrypted_text)
     return render_template('decryption.html')
 
-@app.route('/list_array', methods=['GET', 'POST'])
-def list_array():
-    if request.method == 'POST':
-        tag = request.form['tag']
-        encrypted_text = session.get("encrypted_text")
-        if encrypted_text:
-            encrypted_data = {'tag': tag, 'encrypted_text': encrypted_text}
-            if 'encrypted_data_list' in session:
-                session['encrypted_data_list'].append(encrypted_data)
-            else:
-                session['encrypted_data_list'] = [encrypted_data]
-    return redirect(url_for('encryption'))
-
 @app.route('/list', methods=['GET'])
 @login_required
 def list():
     username = session.get('username')
+
+    if username not in user_data:
+        user_data[username] = {'encrypted_text': '', 'encrypted_data_list': []}
+
     encrypted_data_list = user_data[username].get('encrypted_data_list', [])
     if encrypted_data_list:
         return render_template('list.html', encrypted_data=encrypted_data_list)
@@ -149,17 +154,21 @@ def clear_user_route():
     else:
         return 'Invalid request method'
 
-
 @app.route('/logout', methods=['GET'], endpoint='logout')
 @login_required
 def logout():
     username = session.get('username')
     session.pop('username', None)
     if username in user_data:
-        del user_data[username]
-    session.clear()
+        try:
+            user = User.get(User.username == username)
+            user.encrypted_text = json.dumps(user_data[username]['encrypted_data_list'])
+            user.save()
+        except User.DoesNotExist:
+            print(f"User '{username}' not found.")
+        del user_data[username] 
+    session.clear() 
     return render_template('login.html')
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get("FLASK_SERVER_PORT", 9090), debug=True)

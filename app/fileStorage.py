@@ -1,5 +1,5 @@
 import os
-from peewee import SqliteDatabase, Model, CharField
+from peewee import SqliteDatabase, Model, CharField, TextField
 
 db = SqliteDatabase('users.db')
 
@@ -7,22 +7,34 @@ class User(Model):
     username = CharField(unique=True)
     password = CharField()
     passkey = CharField()
+    encrypted_text = TextField(null=True)
 
     class Meta:
         database = db
 
 db.connect()
-db.create_tables([User])
+db.create_tables([User], safe=True)
 
 def register_user(username, password, passkey):
-    User.create(username=username, password=password, passkey=passkey)
+    try:
+        User.get(User.username == username)
+        return False
+    except User.DoesNotExist:
+        User.create(username=username, password=password, passkey=passkey)
+        return True
 
 def check_credentials(username, password):
+    if not username or not password:
+        return False, None
+
     try:
         user = User.get(User.username == username)
-        return user.password == password
+        if user.password == password:
+            return True, None
+        else:
+            return False, "Wrong password"
     except User.DoesNotExist:
-        return False
+        return False, "Wrong username"
 
 def update_password(username, new_password):
     try:

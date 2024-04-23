@@ -1,14 +1,23 @@
-<form action="/register" method="POST">
-    <label for="username">username:</label>
-    <input type="text" id="username" name="username" maxlength="10" minlength="5" required><br><br>
-    
-    <label for="password">password:</label>
-    <input type="password" id="password" name="password" maxlength="20" minlength="8" required><br><br>
-    
-    <label for="passkey (token)">passkey:</label>
-    <input type="text" id="passkey" name="passkey" maxlength="30" minlength="10" required><br><br>
-    
-<form action="/login" method="GET">
-    <input type="submit" value="Register">
-</form>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+    <form action="/register" method="POST">
+        <label for="username">username:</label>
+        <input type="text" id="username" name="username" maxlength="10" minlength="5" required><br><br>
+        <label for="password">password:</label>
+        <input type="password" id="password" name="password" maxlength="20" minlength="8" required><br><br>
+        <label for="passkey (token)">passkey:</label>
+        <input type="text" id="passkey" name="passkey" maxlength="30" minlength="10" required><br><br>
+        <input type="submit" value="Register">
+    </form>
+    <form action="/login" method="GET">
+        <input type="submit" value="Login">
+    </form>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
