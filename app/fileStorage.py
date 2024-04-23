@@ -1,5 +1,5 @@
 import os
-from peewee import SqliteDatabase, Model, CharField, TextField
+from peewee import SqliteDatabase, Model, CharField, TextField, ForeignKeyField
 
 db = SqliteDatabase('users.db')
 
@@ -7,13 +7,20 @@ class User(Model):
     username = CharField(unique=True)
     password = CharField()
     passkey = CharField()
-    encrypted_text = TextField(null=True)
+
+    class Meta:
+        database = db
+
+class EncryptedData(Model):
+    user = ForeignKeyField(User, backref='encrypted_data')
+    tag = CharField()
+    encrypted_text = TextField()
 
     class Meta:
         database = db
 
 db.connect()
-db.create_tables([User], safe=True)
+db.create_tables([User, EncryptedData], safe=True)
 
 def register_user(username, password, passkey):
     try:
@@ -26,7 +33,6 @@ def register_user(username, password, passkey):
 def check_credentials(username, password):
     if not username or not password:
         return False, None
-
     try:
         user = User.get(User.username == username)
         if user.password == password:
@@ -51,4 +57,26 @@ def clear_user(username):
     except User.DoesNotExist:
         print(f"User '{username}' not found.")
 
+def save_encrypted_data(username, tag, encrypted_text):
+    try:
+        user = User.get(User.username == username)
+        EncryptedData.create(user=user, tag=tag, encrypted_text=encrypted_text)
+    except User.DoesNotExist:
+        print(f"User '{username}' not found.")
 
+def get_encrypted_data(username):
+    try:
+        user = User.get(User.username == username)
+        encrypted_data = list(user.encrypted_data)
+        return encrypted_data
+    except User.DoesNotExist:
+        print(f"User '{username}' not found.")
+        return []
+
+def delete_encrypted_data(username, data_id):
+    try:
+        user = User.get(User.username == username)
+        encrypted_data = EncryptedData.get(EncryptedData.id == data_id, EncryptedData.user == user)
+        encrypted_data.delete_instance()
+    except (User.DoesNotExist, EncryptedData.DoesNotExist):
+        print(f"User '{username}' or data with ID {data_id} not found.")

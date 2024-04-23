@@ -19,14 +19,14 @@
         {% if encrypted_data %}
             {% for data in encrypted_data %}
                 <div class="data">
-                    <p class="title">{{ data.tag }}</p>
-                    <p>{{ data.encrypted_text }}</p>
+                    <p class="title">Tag: {{ data.tag }}</p>
+                    <p>Encrypted Text: {{ data.encrypted_text }}</p>
+                    <a href="{{ url_for('delete_data', data_id=data.id) }}">Delete</a>
                 </div>
             {% endfor %}
         {% else %}
             <p>{{ message }}</p>
         {% endif %}
-        
     </div>
 </body>
 </html>

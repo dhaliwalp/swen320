@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decryption</title>
     <link rel="stylesheet" href="/css/main.css">
-
 </head>
 <body>
     <h1>Password Manager</h1>
@@ -16,7 +15,6 @@
         <li><a href="list">List</a></li>
         <li><a href="login">Logout</a></li>
     </ul>
-
     <div action="/decryption">
         <form action="/decryption" method="POST" class="text-form">
             <label for="encrypted_text">Encrypted Text:</label>
@@ -25,7 +23,9 @@
             <label for="decrypted_text">Decrypted Text:</label>
             <input type="text" value="{{ decrypted_text }}" id="decrypted_text" name="decrypted_text" readonly>
         </form>
+        {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+        {% endif %}
     </div>
-
 </body>
 </html>

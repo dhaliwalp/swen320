@@ -7,6 +7,9 @@ from fileStorage import update_password
 from fileStorage import clear_user
 import json
 from functools import wraps
+from fileStorage import save_encrypted_data
+from fileStorage import get_encrypted_data, delete_encrypted_data
+
 
 app = Flask(__name__, template_folder='/src/app/templates', static_folder='/src/app/static', static_url_path='')
 
@@ -30,6 +33,15 @@ def login_required(func):
 @app.route('/')
 def index():
     return redirect(url_for('login'))
+
+@app.route('/delete/<int:data_id>', methods=['GET', 'POST'])
+def delete_data(data_id):
+    username = session.get('username')
+
+    if username:
+        delete_encrypted_data(username, data_id)
+
+    return redirect(url_for('list_data'))
 
 @app.route('/home', methods=['GET'], endpoint='home')
 @login_required
@@ -95,55 +107,53 @@ def username():
 from flask import session
 
 @app.route('/encryption', methods=['GET', 'POST'])
-@login_required
 def encryption():
-    username = session.get('username')
-
-    if username not in user_data:
-        user_data[username] = {'encrypted_text': '', 'encrypted_data_list': []}
-
-    base64_encoded_text = ""
+    encrypted_text = ''
 
     if request.method == 'POST':
         if 'encrypt' in request.form:
             password_text = request.form['password_text']
+            cipher = Cipher()
             encrypted_text = cipher.encrypt(password_text)
-            base64_encoded_text = cipher.base64Encode(encrypted_text)
-            user_data[username]['encrypted_text'] = encrypted_text
+            session['encrypted_text'] = encrypted_text
         elif 'save' in request.form:
-            tag = request.form.get('tag', '')
-            encrypted_text = user_data[username]['encrypted_text']
-            if tag and encrypted_text:
-                encrypted_data = {'tag': tag, 'encrypted_text': encrypted_text}
-                user_data[username]['encrypted_data_list'].append(encrypted_data)
-                user_data[username]['encrypted_text'] = ''
+            tag = request.form['tag']
+            username = session.get('username')
+            encrypted_text = session.get('encrypted_text')
 
-    encrypted_text = user_data[username]['encrypted_text']
-    return render_template('encryption.html', encrypted_text=encrypted_text, base64_encoded_text=base64_encoded_text)
+            if username and encrypted_text:
+                save_encrypted_data(username, tag, encrypted_text)
+            else:
+                pass
 
-@app.route('/decryption', methods=['GET', 'POST'], endpoint='decryption')
-@login_required
+    return render_template('encryption.html', encrypted_text=encrypted_text)
+
+@app.route('/decryption', methods=['GET', 'POST'])
 def decryption():
+    decrypted_text = ""
+    error_message = ""
+
     if request.method == 'POST':
         encrypted_text = request.form['encrypted_text']
-        decrypted_text = cipher.decrypt(encrypted_text)
-        # if decrypted_text == None:
-        #     return render_template('decryption.html', message="Invalid Encryption")
-        return render_template('decryption.html', decrypted_text=decrypted_text)
-    return render_template('decryption.html')
+
+        try:
+            cipher = Cipher()
+            decrypted_text = cipher.decrypt(encrypted_text)
+        except Exception as e:
+            error_message = str(e)
+
+    return render_template('decryption.html', decrypted_text=decrypted_text, error_message=error_message)
 
 @app.route('/list', methods=['GET'])
-@login_required
-def list():
+def list_data():
     username = session.get('username')
 
-    if username not in user_data:
-        user_data[username] = {'encrypted_text': '', 'encrypted_data_list': []}
-
-    encrypted_data_list = user_data[username].get('encrypted_data_list', [])
-    if encrypted_data_list:
-        return render_template('list.html', encrypted_data=encrypted_data_list)
-    return render_template('list.html', message="No encrypted data available.")
+    if username:
+        encrypted_data = get_encrypted_data(username)
+        return render_template('list.html', encrypted_data=encrypted_data)
+    else:
+        message = 'You must be logged in to view the list.'
+        return render_template('list.html', message=message)
     
 
 @app.route('/clear_user', methods=['POST'])
