@@ -40,7 +40,6 @@ def home():
 def get_post_form():
     return render_template('post_form.html')
 
-
 @app.route('/post_submit', methods=['POST'])
 def form_response_ex():
     user = ""
@@ -128,6 +127,8 @@ def decryption():
     if request.method == 'POST':
         encrypted_text = request.form['encrypted_text']
         decrypted_text = cipher.decrypt(encrypted_text)
+        # if decrypted_text == None:
+        #     return render_template('decryption.html', message="Invalid Encryption")
         return render_template('decryption.html', decrypted_text=decrypted_text)
     return render_template('decryption.html')
 

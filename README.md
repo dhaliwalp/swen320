@@ -13,8 +13,6 @@ docker image ls
 You should see a image flask_ex1.
 
 ```
-docker run -itd -p9090:9090 --rm -v$(pwd)/app:/src/app --name flask_ex1_con flask_ex1
-
 docker run -itd -p 9090:9090 --rm -v ${PWD}/app:/src/app --name flask_ex1_con flask_ex1
 ```
 
